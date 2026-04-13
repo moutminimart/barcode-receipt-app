@@ -1,42 +1,36 @@
 import streamlit as st
 from PIL import Image
-import easyocr
-from pyzbar.pyzbar import decode
+import pytesseract
+import numpy as np
+import cv2
 from rapidfuzz import fuzz
 import pandas as pd
 import re
 
-st.title("📦 Barcode + Receipt Matcher (V2)")
-
-reader = easyocr.Reader(['th','en'])
+st.title("📦 Barcode + Receipt Matcher (Stable V2)")
 
 # Upload
 product_images = st.file_uploader("Upload Product Images", accept_multiple_files=True)
 receipt_image = st.file_uploader("Upload Receipt Image")
 
-# --- Barcode ---
+# --- Barcode (TEMP DISABLED FOR STABILITY) ---
 def extract_barcodes(image):
-    decoded = decode(image)
-    return [d.data.decode("utf-8") for d in decoded]
+    return ["barcode_temp"]  # placeholder
 
-# --- OCR ---
-import numpy as np
-import cv2
-from PIL import Image
-
+# --- OCR (Stable with Tesseract) ---
 def extract_text(image):
     img = Image.open(image)
     img = np.array(img)
 
+    # Preprocess
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     gray = cv2.convertScaleAbs(gray, alpha=1.5, beta=0)
     _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 
-    results = reader.readtext(thresh)
+    # OCR
+    text = pytesseract.image_to_string(thresh, lang='eng+tha')
 
-    text = "\n".join([r[1] for r in results])
-
-    return text, thresh   
+    return text, thresh
 
 # --- Parse receipt ---
 def parse_receipt(text):
@@ -85,7 +79,7 @@ if st.button("🚀 Process"):
     else:
         all_barcodes = []
 
-        st.subheader("📦 Detected Barcodes")
+        st.subheader("📦 Products (Temp Barcode)")
         for file in product_images:
             img = Image.open(file)
             barcodes = extract_barcodes(img)

@@ -1,8 +1,6 @@
 streamlit
-easyocr
-pyzbar
+pytesseract
+opencv-python-headless
 pillow
 rapidfuzz
 pandas
-opencv-python-headless
-libzbar0
