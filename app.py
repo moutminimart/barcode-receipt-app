@@ -21,12 +21,26 @@ def extract_barcodes(image):
 
 # --- OCR ---
 import numpy as np
+import cv2
+from PIL import Image
 
 def extract_text(image):
+    # Convert to OpenCV format
     img = Image.open(image)
     img = np.array(img)
-    
-    results = reader.readtext(img)
+
+    # Convert to grayscale
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # Increase contrast
+    gray = cv2.convertScaleAbs(gray, alpha=1.5, beta=0)
+
+    # Threshold (make text clearer)
+    _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
+
+    # OCR
+    results = reader.readtext(thresh)
+
     return "\n".join([r[1] for r in results])
 
 # --- Parse receipt ---
