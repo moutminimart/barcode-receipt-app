@@ -20,8 +20,13 @@ def extract_barcodes(image):
     return [d.data.decode("utf-8") for d in decoded]
 
 # --- OCR ---
+import numpy as np
+
 def extract_text(image):
-    results = reader.readtext(image)
+    img = Image.open(image)
+    img = np.array(img)
+    
+    results = reader.readtext(img)
     return "\n".join([r[1] for r in results])
 
 # --- Parse receipt ---
