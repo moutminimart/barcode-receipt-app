@@ -97,8 +97,8 @@ if st.button("🚀 Process"):
         st.subheader("🧾 Reading Receipt...")
         receipt_text, processed_img = extract_text(receipt_image)
 
-st.image(processed_img, caption="Processed Image for OCR")
-st.text(receipt_text)
+        st.image(processed_img, caption="Processed Image for OCR")
+        st.text(receipt_text)
 
         items = parse_receipt(receipt_text)
 
