@@ -5,3 +5,4 @@ pillow
 rapidfuzz
 pandas
 opencv-python-headless
+libzbar0
