@@ -1,4 +1,6 @@
 streamlit
-pytesseract
+easyocr
 pyzbar
-Pillow
+pillow
+rapidfuzz
+pandas
