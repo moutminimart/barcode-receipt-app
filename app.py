@@ -25,23 +25,18 @@ import cv2
 from PIL import Image
 
 def extract_text(image):
-    # Convert to OpenCV format
     img = Image.open(image)
     img = np.array(img)
 
-    # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
-    # Increase contrast
     gray = cv2.convertScaleAbs(gray, alpha=1.5, beta=0)
-
-    # Threshold (make text clearer)
     _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
 
-    # OCR
     results = reader.readtext(thresh)
 
-    return "\n".join([r[1] for r in results])
+    text = "\n".join([r[1] for r in results])
+
+    return text, thresh   
 
 # --- Parse receipt ---
 def parse_receipt(text):
@@ -100,7 +95,10 @@ if st.button("🚀 Process"):
                 all_barcodes.append(b)
 
         st.subheader("🧾 Reading Receipt...")
-        receipt_text = extract_text(receipt_image)
+        receipt_text, processed_img = extract_text(receipt_image)
+
+st.image(processed_img, caption="Processed Image for OCR")
+st.text(receipt_text)
 
         items = parse_receipt(receipt_text)
 
